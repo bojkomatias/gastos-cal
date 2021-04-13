@@ -6,14 +6,18 @@ export default function Home() {
   const [state, setstate] = useState([])
   const [q, setq] = useState(5)
   const [resultado, setresultado] = useState({ transacciones: [] })
+  const [query, setquery] = useState(`https://fakerapi.it/api/v1/custom?_quantity=${q}&name=name&monto=number&phone=phone&counter=counter`)
 
   async function fetchRes() {
-    await fetch(`https://fakerapi.it/api/v1/custom?_quantity=${q}&name=name&monto=number&counter=counter`, {
+    setquery(`https://fakerapi.it/api/v1/custom?_quantity=${q}&name=name&monto=number&phone=phone&counter=counter`)
+    await fetch(query, {
       method: 'GET',
       headers: {
         'Accept': 'application/json'
       }
-    }).then(res => res.json()).then(data => setstate(data.data))
+    }).then(res => res.json()).then(data => {
+      setstate(data.data)
+    })
   }
   useEffect(() => {
     fetchRes()
@@ -51,16 +55,6 @@ export default function Home() {
     }
     setresultado({ transacciones: trans, corresponde: corresponde })
   }
-  async function guardarResultado(res) {
-    await fetch(`/api/hello`, {
-      method: 'PUT',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(res)
-    })
-  }
   return (
     <div >
       <Head>
@@ -68,34 +62,41 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <h1>Calculador de Gastos  🚀 </h1>
+      <sub>{query}</sub>
       <div className='cont'>
         <div className='cols'>
           <div>
-            <p>Traer datos de<input id='input' type='number' min='0' max='10' placeholder='5' onBlur={(e) => {
+            <p>Traer datos de <input id='input' type='number' min='0' max='10' placeholder='5' onBlur={(e) => {
               setresultado({ transacciones: [] })
               setq(Number(e.target.value))
-            }} /> </p>
+            }} /> personas </p>
+
             <table>
               <thead>
                 <tr>
                   <th>
-                    🆔
+                    ID
                   </th>
                   <th>
-                    🙋
-              </th>
+                    Persona
+                  </th>
                   <th>
-                    💰
+                    Whastapp
+                  </th>
+                  <th>
+                    MONTO 💰
               </th>
                 </tr>
               </thead>
+              <br />
               {/* <pre>{JSON.stringify(state, null, 2)}</pre> */}
               <tbody>
                 {state === [] ? null : state.map(i => (
                   <tr key={i.name}>
                     <td> {i.counter}</td>
                     <td> {i.name}</td>
-                    <td class='num'> {i.monto}</td>
+                    <td > {i.phone}</td>
+                    <td> $ {i.monto}</td>
                   </tr>
                 ))}
               </tbody>
@@ -107,23 +108,24 @@ export default function Home() {
             </table>
           </div>
         </div>
-        <div className='cols'>
-          <button onClick={() => Calcular()}>CALCULAR 💣 </button>
-        </div>
 
         <div id='scroll' className='cols'>
           <div>
-            <h4>Corresponde a cada persona pagar: {resultado.corresponde}</h4>
+            <button onClick={() => Calcular()}>CALCULAR 💣 </button>
+            <h4>Corresponde a cada persona pagar: ${Math.trunc(resultado.corresponde)}</h4>
+            <br />
+            <br />
             {resultado.transacciones.map(t => (
               <div key={t.monto} className='trs'>
                 <div>{t.deudor}</div>
-                <div className='num'>${Math.trunc(t.monto)} ↔ </div>
+                <div className='num'>💸 ${Math.trunc(t.monto)} </div>
                 <div>{t.acredor}</div>
               </div>
             ))}
           </div>
         </div>
       </div>
+
     </div>
   )
 }
