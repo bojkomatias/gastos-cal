@@ -14,3 +14,28 @@ a {
 * {
   box-sizing: border-box;
 }
+
+.cont {
+  margin: 100px 20px 20px 20px;
+  display: grid;
+  grid-template-columns: 1fr 100px 1fr;
+  grid-template-rows: 70vh;
+}
+
+.num {
+  text-align: right;
+}
+#input {
+  border: 0px;
+  border-bottom: 1px;
+  text-align: center;
+  width: 40px;
+}
+
+.cols {
+  display: flex;
+  border-width: 1px;
+  justify-content: space-around;
+  align-items: baseline;
+  overflow: auto;
+}

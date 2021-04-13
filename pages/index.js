@@ -1,13 +1,23 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
-import { useState } from 'react'
-import { useRouter } from 'next/router'
+import { useState, useEffect } from 'react'
 
 export default function Home() {
-  const router = useRouter()
   const [state, setstate] = useState([])
-  const [person, setPerson] = useState({})
+  const [q, setq] = useState(5)
   const [resultado, setresultado] = useState({ transacciones: [] })
+
+  async function fetchRes() {
+    await fetch(`https://fakerapi.it/api/v1/custom?_quantity=${q}&name=name&monto=number&counter=counter`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json'
+      }
+    }).then(res => res.json()).then(data => setstate(data.data))
+  }
+  useEffect(() => {
+    fetchRes()
+  }, [q])
 
   const Total = () => {
     let total = 0
@@ -18,8 +28,8 @@ export default function Home() {
   }
 
   const Calcular = () => {
+    setresultado({})
     var corresponde = Total() / state.length
-
     console.log(`Corresponde : ${corresponde}`)
     let trans = []
     for (var i = 0; i < state.length; i++) {
@@ -41,7 +51,6 @@ export default function Home() {
     }
     setresultado({ transacciones: trans, corresponde: corresponde })
   }
-
   async function guardarResultado(res) {
     await fetch(`/api/hello`, {
       method: 'PUT',
@@ -52,70 +61,60 @@ export default function Home() {
       body: JSON.stringify(res)
     })
   }
-
   return (
-    <div className={styles.container}>
+    <div >
       <Head>
-        <title>Calculador de Gastos</title>
+        <title>Calculador de Gastos 🚀 </title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div>
-        <button onClick={(e) => {
-          e.preventDefault()
-          router.push('/verResultados')
-        }}>Ver transacciones guardadas</button>
-        <h2>Nuevo Cálculo</h2>
-        <form onSubmit={(e) => {
-          e.preventDefault()
-          document.forms[0].reset()
-          setstate([...state, person])
-          setPerson({})
-        }}>
-          <input required type='text' placeholder="Nombre.." onChange={(e) => setPerson({ ...person, name: e.target.value })} />
-          <input required type='number' placeholder="Monto.." onChange={(e) => setPerson({ ...person, monto: Number(e.target.value) })} />
-          <button type='submit'>Agregar Persona</button>
-        </form>
-        <table>
-          <thead>
-            <tr>
-              <th>
-                Nombre
-              </th>
-              <th>
-                Monto
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {state.map(i => (
-              <tr key={i.name}>
-                <td>{i.name}</td>
-                <td>{i.monto}</td>
-              </tr>
-            ))}
-          </tbody>
-          <tfoot>
-            <tr>
-              <td>Total : {state === [] ? null : Total()}</td>
-            </tr>
-          </tfoot>
-        </table>
-        <button onClick={() => Calcular()}>CALCULAR</button>
+      <div className='cont'>
 
-        <div>
-          <h4>Corresponde a cada persona pagar: {resultado.corresponde}</h4>
-          {resultado.transacciones.map(t => (
-            <div key={t.monto}>
-              <p>{`${t.deudor} debe pagar ${t.monto} a ${t.acredor}`}</p>
-            </div>
-          ))}
+        <div className='cols'>
+          <div>
+            <p>Traer datos de<input id='input' type='number' min='0' max='20' placeholder='5' onBlur={(e) => setq(Number(e.target.value))} /> </p>
+            <table>
+              <thead>
+                <tr>
+                  <th>
+                    Nombre
+              </th>
+                  <th>
+                    Monto
+              </th>
+                </tr>
+              </thead>
+              {/* <pre>{JSON.stringify(state, null, 2)}</pre> */}
+              <tbody>
+                {state === [] ? null : state.map(i => (
+                  <tr key={i.name}>
+                    <td>{i.counter}</td>
+                    <td>{i.name}</td>
+                    <td class='num'>{i.monto}</td>
+                  </tr>
+                ))}
+              </tbody>
+              <tfoot>
+                <tr>
+                  {/* <td>Total : {state === [] ? null : Total()}</td> */}
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+        <div className='cols'>
+          <button onClick={() => Calcular()}>CALCULAR 💣 </button>
         </div>
 
-
-        <button onClick={(e) => {
-          e.preventDefault()
-          guardarResultado(resultado)
-        }}>Guardar</button>
+        <div className='cols'>
+        <div>
+            <h4>Corresponde a cada persona pagar: {resultado.corresponde}</h4>
+            {resultado.transacciones.map(t => (
+              <div key={t.monto}>
+                <p>{`${t.deudor} debe pagar ${t.monto} a ${t.acredor}`}</p>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   )
