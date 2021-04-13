@@ -28,7 +28,7 @@ export default function Home() {
   }
 
   const Calcular = () => {
-    setresultado({})
+
     var corresponde = Total() / state.length
     console.log(`Corresponde : ${corresponde}`)
     let trans = []
@@ -67,19 +67,25 @@ export default function Home() {
         <title>Calculador de Gastos 🚀 </title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <h1>Calculador de Gastos  🚀 </h1>
       <div className='cont'>
-
         <div className='cols'>
           <div>
-            <p>Traer datos de<input id='input' type='number' min='0' max='20' placeholder='5' onBlur={(e) => setq(Number(e.target.value))} /> </p>
+            <p>Traer datos de<input id='input' type='number' min='0' max='10' placeholder='5' onBlur={(e) => {
+              setresultado({ transacciones: [] })
+              setq(Number(e.target.value))
+            }} /> </p>
             <table>
               <thead>
                 <tr>
                   <th>
-                    Nombre
+                    🆔
+                  </th>
+                  <th>
+                    🙋
               </th>
                   <th>
-                    Monto
+                    💰
               </th>
                 </tr>
               </thead>
@@ -87,9 +93,9 @@ export default function Home() {
               <tbody>
                 {state === [] ? null : state.map(i => (
                   <tr key={i.name}>
-                    <td>{i.counter}</td>
-                    <td>{i.name}</td>
-                    <td class='num'>{i.monto}</td>
+                    <td> {i.counter}</td>
+                    <td> {i.name}</td>
+                    <td class='num'> {i.monto}</td>
                   </tr>
                 ))}
               </tbody>
@@ -105,12 +111,14 @@ export default function Home() {
           <button onClick={() => Calcular()}>CALCULAR 💣 </button>
         </div>
 
-        <div className='cols'>
-        <div>
+        <div id='scroll' className='cols'>
+          <div>
             <h4>Corresponde a cada persona pagar: {resultado.corresponde}</h4>
             {resultado.transacciones.map(t => (
-              <div key={t.monto}>
-                <p>{`${t.deudor} debe pagar ${t.monto} a ${t.acredor}`}</p>
+              <div key={t.monto} className='trs'>
+                <div>{t.deudor}</div>
+                <div className='num'>${Math.trunc(t.monto)} ↔ </div>
+                <div>{t.acredor}</div>
               </div>
             ))}
           </div>

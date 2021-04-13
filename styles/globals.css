@@ -33,9 +33,15 @@ a {
 }
 
 .cols {
+  height: 70vh;
   display: flex;
-  border-width: 1px;
   justify-content: space-around;
-  align-items: baseline;
-  overflow: auto;
+  align-items: flex-end;
+}
+
+.trs {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: auto;
+  column-gap: 2rem;
 }
