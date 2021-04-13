@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb';
-import { connectToDatabase } from '../../public/database'
+import { connectToDatabase } from '../../database'
 
 export default async (req, res) => {
   if (req.method === 'GET') {

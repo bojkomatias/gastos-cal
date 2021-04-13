@@ -5,12 +5,12 @@ const Resultados = () => {
   const router = useRouter()
   const [state, setstate] = useState([])
   async function fetchRes() {
-    const res = await fetch(`/api/hello`, {
+    const res = await fetch(`https://swapi.dev/api/people/1/`, {
       method: 'GET',
       headers: {
         'Accept': 'application/json'
       }
-    }).then(res => res.json()).then(data => setstate(data))
+    }).then(res => res.json()).then(data => console.log(data))
   }
   useEffect(() => {
     fetchRes()
@@ -22,7 +22,8 @@ const Resultados = () => {
         e.preventDefault()
         router.push('/')
       }}>Volver</button>
-      Transacciones realizadas
+      <pre>{JSON.stringify(state, null, 2)}</pre>
+      {/* Transacciones realizadas
       {state == undefined ? null : <>
         {
           state.map(s => (
@@ -37,7 +38,7 @@ const Resultados = () => {
           ))
         }
       </>
-      }
+      } */}
     </div>
   )
 }

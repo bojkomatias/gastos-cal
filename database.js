@@ -4,7 +4,7 @@ export const connectToDatabase = async () => {
   if (cachedb) {
     return Promise.resolve(cachedb)
   } else {
-    return MongoClient.connect(process.env.DB_URI, { native_parser: true, useUnifiedTopology: true })
+    return MongoClient.connect("mongodb+srv://bojkomatias:27deenero@cluster0-4djd9.mongodb.net/gastos?retryWrites=true&w=majority", { native_parser: false, useUnifiedTopology: true })
       .then((client) => {
         let db = client.db("gastos")
         cachedb = db
